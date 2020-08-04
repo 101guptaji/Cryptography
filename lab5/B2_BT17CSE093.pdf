@@ -1,0 +1,874 @@
+#Q.1:- DES alogorithm
+
+PC1 = [57, 49, 41, 33, 25, 17, 9,
+       1, 58, 50, 42, 34, 26, 18,
+       10, 2, 59, 51, 43, 35, 27,
+       19, 11, 3, 60, 52, 44, 36,
+       63, 55, 47, 39, 31, 23, 15,
+       7, 62, 54, 46, 38, 30, 22,
+       14, 6, 61, 53, 45, 37, 29,
+       21, 13, 5, 28, 20, 12, 4]
+
+PC2 = [14, 17, 11, 24, 1, 5,
+       3, 28, 15, 6, 21, 10,
+       23, 19, 12, 4, 26, 8,
+       16, 7, 27, 20, 13, 2,
+       41, 52, 31, 37, 47, 55,
+       30, 40,51, 45, 33, 48,
+       44, 49, 39, 56,34, 53,
+       46, 42, 50, 36, 29, 32]
+
+IP = [58, 50, 42, 34, 26, 18, 10, 2,
+      60, 52, 44, 36, 28, 20, 12, 4,
+      62, 54, 46, 38, 30, 22, 14, 6,
+      64, 56, 48, 40, 32, 24, 16, 8,
+      57, 49, 41, 33, 25, 17, 9, 1,
+      59, 51, 43, 35, 27, 19, 11, 3,
+      61, 53, 45, 37, 29, 21, 13, 5,
+      63, 55, 47, 39, 31, 23, 15, 7]
+
+E = [32, 1, 2, 3, 4, 5,
+     4, 5, 6, 7, 8, 9,
+     8, 9, 10, 11, 12, 13,
+     12, 13, 14, 15, 16, 17,
+     16, 17, 18, 19, 20, 21,
+     20, 21, 22, 23, 24, 25,
+     24, 25, 26, 27, 28, 29,
+     28, 29, 30, 31, 32, 1]
+
+S = [
+    [[14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7],
+     [0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8],
+     [4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0],
+     [15, 12, 8, 2, 4, 9, 1, 7, 5, 11, 3, 14, 10, 0, 6, 13],
+     ],
+    [[15, 1, 8, 14, 6, 11, 3, 4, 9, 7, 2, 13, 12, 0, 5, 10],
+     [3, 13, 4, 7, 15, 2, 8, 14, 12, 0, 1, 10, 6, 9, 11, 5],
+     [0, 14, 7, 11, 10, 4, 13, 1, 5, 8, 12, 6, 9, 3, 2, 15],
+     [13, 8, 10, 1, 3, 15, 4, 2, 11, 6, 7, 12, 0, 5, 14, 9],
+     ],
+    [[10, 0, 9, 14, 6, 3, 15, 5, 1, 13, 12, 7, 11, 4, 2, 8],
+     [13, 7, 0, 9, 3, 4, 6, 10, 2, 8, 5, 14, 12, 11, 15, 1],
+     [13, 6, 4, 9, 8, 15, 3, 0, 11, 1, 2, 12, 5, 10, 14, 7],
+     [1, 10, 13, 0, 6, 9, 8, 7, 4, 15, 14, 3, 11, 5, 2, 12],
+     ],
+    [[7, 13, 14, 3, 0, 6, 9, 10, 1, 2, 8, 5, 11, 12, 4, 15],
+     [13, 8, 11, 5, 6, 15, 0, 3, 4, 7, 2, 12, 1, 10, 14, 9],
+     [10, 6, 9, 0, 12, 11, 7, 13, 15, 1, 3, 14, 5, 2, 8, 4],
+     [3, 15, 0, 6, 10, 1, 13, 8, 9, 4, 5, 11, 12, 7, 2, 14],
+     ],
+    [[2, 12, 4, 1, 7, 10, 11, 6, 8, 5, 3, 15, 13, 0, 14, 9],
+     [14, 11, 2, 12, 4, 7, 13, 1, 5, 0, 15, 10, 3, 9, 8, 6],
+     [4, 2, 1, 11, 10, 13, 7, 8, 15, 9, 12, 5, 6, 3, 0, 14],
+     [11, 8, 12, 7, 1, 14, 2, 13, 6, 15, 0, 9, 10, 4, 5, 3],
+     ],
+    [[12, 1, 10, 15, 9, 2, 6, 8, 0, 13, 3, 4, 14, 7, 5, 11],
+     [10, 15, 4, 2, 7, 12, 9, 5, 6, 1, 13, 14, 0, 11, 3, 8],
+     [9, 14, 15, 5, 2, 8, 12, 3, 7, 0, 4, 10, 1, 13, 11, 6],
+     [4, 3, 2, 12, 9, 5, 15, 10, 11, 14, 1, 7, 6, 0, 8, 13],
+     ],
+    [[4, 11, 2, 14, 15, 0, 8, 13, 3, 12, 9, 7, 5, 10, 6, 1],
+     [13, 0, 11, 7, 4, 9, 1, 10, 14, 3, 5, 12, 2, 15, 8, 6],
+     [1, 4, 11, 13, 12, 3, 7, 14, 10, 15, 6, 8, 0, 5, 9, 2],
+     [6, 11, 13, 8, 1, 4, 10, 7, 9, 5, 0, 15, 14, 2, 3, 12],
+     ],
+    [[13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7],
+     [1, 15, 13, 8, 10, 3, 7, 4, 12, 5, 6, 11, 0, 14, 9, 2],
+     [7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8],
+     [2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11],
+     ]
+]
+
+
+P = [16, 7, 20, 21,
+     29, 12, 28, 17,
+     1, 15, 23, 26,
+     5, 18, 31, 10,
+     2, 8, 24, 14,
+     32, 27, 3, 9,
+     19, 13, 30, 6,
+     22, 11, 4, 25]
+
+
+IP_1 = [40, 8, 48, 16, 56, 24, 64, 32,
+       39, 7, 47, 15, 55, 23, 63, 31,
+       38, 6, 46, 14, 54, 22, 62, 30,
+       37, 5, 45, 13, 53, 21, 61, 29,
+       36, 4, 44, 12, 52, 20, 60, 28,
+       35, 3, 43, 11, 51, 19, 59, 27,
+       34, 2, 42, 10, 50, 18, 58, 26,
+       33, 1, 41, 9, 49, 17, 57, 25]
+
+
+def printkey(lhs, key, sp):
+    res = ""
+    for i in range(0, len(key)):
+        res += key[i]
+        if (i + 1) % sp == 0:
+            res += " "
+    print(lhs + " = " + res)
+
+
+def generate_from_table(key, table):
+    new_key = ""
+    for i in range(0, len(table)):
+        new_key += key[table[i] - 1]
+    return new_key
+
+
+def generate_block_pairs(key):
+    shift = [1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1]
+    C = key[:int(len(key)/2)]
+    D = key[int(len(key)/2):]
+    key_list = []
+    for i in range(0, 16):
+        for j in range(0, shift[i]):
+            C += C[0]
+            C = C[1:len(C)]
+            D += D[0]
+            D = D[1:len(D)]
+        print("C" + str(i+1) + " = " + C)
+        print("D" + str(i+1) + " = " + D + "\n")
+        key_list.append(C + D)
+    return key_list
+
+
+def generate_subkeys(key_list):
+    for i in range(0, len(key_list)):
+        key_list[i] = generate_from_table(key_list[i], PC2)
+        print("K%.2d = %s" % (i+1, key_list[i]))
+
+
+def XOR(x, y):
+    res = ""
+    for i in range(0, len(x)):
+        if x[i] == y[i]:
+            res += '0'
+        else:
+            res += '1'
+    return res
+
+
+def f(key, block):
+    block_expanded = generate_from_table(block, E)
+    xor_res = ""
+    xor_res = XOR(key, block_expanded)
+    printkey("XOR" , xor_res, 6)
+    sbox_ind = 0
+    row = 0
+    col = 0
+    ind = 0
+    b = ""
+    res = ""
+    for i in range(0, len(xor_res)):
+        b += xor_res[i]
+        sbox_ind += (i and i % 6 == 0);
+        if len(b) % 6 == 0:
+            row = int(b[0] + b[len(b)-1], 2)
+            col = int(b[1:len(b)-1], 2)
+            sbox_res = bin(S[sbox_ind][row][col])[2:]
+            res += "0"*(4-len(sbox_res)) + sbox_res
+            b = ""
+    printkey("f", res, 4)
+    res = generate_from_table(res, P)
+    return res
+
+
+def encrypt(mess, key_list):
+    L = mess[:int(len(mess)/2)]
+    R = mess[int(len(mess)/2):]
+    new_L = ""
+    new_R = ""
+    for i in range(0, 16):
+        print("Round %d:" % (i + 1))
+        new_L = R
+        new_R = XOR(L, f(key_list[i], R))
+        L = new_L
+        R = new_R
+        printkey("L", L, 4)
+        printkey("R", R, 4)
+    return generate_from_table(R+L, IP_1)
+
+
+def hex_to_bin(hex):
+    res = ""
+    for i in range(0, len(hex)):
+        s = bin(int(hex[i], 16))[2:]
+        res += "0"*(4-len(s)) + s
+    return res
+
+
+def bin_to_hex(bin):
+    res = ""
+    i = 0
+    while i < len(bin):
+        res += hex(int(bin[i:i+4], 2))[2:]
+        i += 4
+    res = res.upper()
+    return res
+
+
+hex_key = input("Enter encryption key(in Hex): ")
+key = hex_to_bin(hex_key)
+printkey("Binary key", key, 8)
+print("Generating PC-1 permutation for the key...")
+key = generate_from_table(key, PC1)
+printkey("PC-1 permutation of the key", key, 8)
+
+print("Generating block pairs..")
+key_list = generate_block_pairs(key)
+
+print("Generating subkeys..")
+generate_subkeys(key_list)
+
+hex_mess = input("\nEnter your message (in hex) to encrypt: ")
+mess = hex_to_bin(hex_mess)
+print("\nApplying initial permutation to the 64-bit message..")
+mess = generate_from_table(mess, IP)
+printkey("Initial permutation of messa", mess, 8)
+
+print("Encrypting messa...")
+cipher = encrypt(mess, key_list)
+printkey("Cipher text (Binary)", cipher, 8)
+cipher = bin_to_hex(cipher)
+print("Cipher text(Hex) = " , cipher)
+
+
+#Q.2:- AES algorithm
+import os
+from tqdm import tqdm
+
+def random_key_generator(key_length):
+    return bytes.hex(os.urandom(key_length // 8))
+
+class AES:
+    Nb = 4
+
+    Nk = 4
+
+    Nr = 10
+
+    Sbox = (
+        0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
+        0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0,
+        0xB7, 0xFD, 0x93, 0x26, 0x36, 0x3F, 0xF7, 0xCC, 0x34, 0xA5, 0xE5, 0xF1, 0x71, 0xD8, 0x31, 0x15,
+        0x04, 0xC7, 0x23, 0xC3, 0x18, 0x96, 0x05, 0x9A, 0x07, 0x12, 0x80, 0xE2, 0xEB, 0x27, 0xB2, 0x75,
+        0x09, 0x83, 0x2C, 0x1A, 0x1B, 0x6E, 0x5A, 0xA0, 0x52, 0x3B, 0xD6, 0xB3, 0x29, 0xE3, 0x2F, 0x84,
+        0x53, 0xD1, 0x00, 0xED, 0x20, 0xFC, 0xB1, 0x5B, 0x6A, 0xCB, 0xBE, 0x39, 0x4A, 0x4C, 0x58, 0xCF,
+        0xD0, 0xEF, 0xAA, 0xFB, 0x43, 0x4D, 0x33, 0x85, 0x45, 0xF9, 0x02, 0x7F, 0x50, 0x3C, 0x9F, 0xA8,
+        0x51, 0xA3, 0x40, 0x8F, 0x92, 0x9D, 0x38, 0xF5, 0xBC, 0xB6, 0xDA, 0x21, 0x10, 0xFF, 0xF3, 0xD2,
+        0xCD, 0x0C, 0x13, 0xEC, 0x5F, 0x97, 0x44, 0x17, 0xC4, 0xA7, 0x7E, 0x3D, 0x64, 0x5D, 0x19, 0x73,
+        0x60, 0x81, 0x4F, 0xDC, 0x22, 0x2A, 0x90, 0x88, 0x46, 0xEE, 0xB8, 0x14, 0xDE, 0x5E, 0x0B, 0xDB,
+        0xE0, 0x32, 0x3A, 0x0A, 0x49, 0x06, 0x24, 0x5C, 0xC2, 0xD3, 0xAC, 0x62, 0x91, 0x95, 0xE4, 0x79,
+        0xE7, 0xC8, 0x37, 0x6D, 0x8D, 0xD5, 0x4E, 0xA9, 0x6C, 0x56, 0xF4, 0xEA, 0x65, 0x7A, 0xAE, 0x08,
+        0xBA, 0x78, 0x25, 0x2E, 0x1C, 0xA6, 0xB4, 0xC6, 0xE8, 0xDD, 0x74, 0x1F, 0x4B, 0xBD, 0x8B, 0x8A,
+        0x70, 0x3E, 0xB5, 0x66, 0x48, 0x03, 0xF6, 0x0E, 0x61, 0x35, 0x57, 0xB9, 0x86, 0xC1, 0x1D, 0x9E,
+        0xE1, 0xF8, 0x98, 0x11, 0x69, 0xD9, 0x8E, 0x94, 0x9B, 0x1E, 0x87, 0xE9, 0xCE, 0x55, 0x28, 0xDF,
+        0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16,
+    )
+
+    InvSbox = (
+        0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5, 0x38, 0xBF, 0x40, 0xA3, 0x9E, 0x81, 0xF3, 0xD7, 0xFB,
+        0x7C, 0xE3, 0x39, 0x82, 0x9B, 0x2F, 0xFF, 0x87, 0x34, 0x8E, 0x43, 0x44, 0xC4, 0xDE, 0xE9, 0xCB,
+        0x54, 0x7B, 0x94, 0x32, 0xA6, 0xC2, 0x23, 0x3D, 0xEE, 0x4C, 0x95, 0x0B, 0x42, 0xFA, 0xC3, 0x4E,
+        0x08, 0x2E, 0xA1, 0x66, 0x28, 0xD9, 0x24, 0xB2, 0x76, 0x5B, 0xA2, 0x49, 0x6D, 0x8B, 0xD1, 0x25,
+        0x72, 0xF8, 0xF6, 0x64, 0x86, 0x68, 0x98, 0x16, 0xD4, 0xA4, 0x5C, 0xCC, 0x5D, 0x65, 0xB6, 0x92,
+        0x6C, 0x70, 0x48, 0x50, 0xFD, 0xED, 0xB9, 0xDA, 0x5E, 0x15, 0x46, 0x57, 0xA7, 0x8D, 0x9D, 0x84,
+        0x90, 0xD8, 0xAB, 0x00, 0x8C, 0xBC, 0xD3, 0x0A, 0xF7, 0xE4, 0x58, 0x05, 0xB8, 0xB3, 0x45, 0x06,
+        0xD0, 0x2C, 0x1E, 0x8F, 0xCA, 0x3F, 0x0F, 0x02, 0xC1, 0xAF, 0xBD, 0x03, 0x01, 0x13, 0x8A, 0x6B,
+        0x3A, 0x91, 0x11, 0x41, 0x4F, 0x67, 0xDC, 0xEA, 0x97, 0xF2, 0xCF, 0xCE, 0xF0, 0xB4, 0xE6, 0x73,
+        0x96, 0xAC, 0x74, 0x22, 0xE7, 0xAD, 0x35, 0x85, 0xE2, 0xF9, 0x37, 0xE8, 0x1C, 0x75, 0xDF, 0x6E,
+        0x47, 0xF1, 0x1A, 0x71, 0x1D, 0x29, 0xC5, 0x89, 0x6F, 0xB7, 0x62, 0x0E, 0xAA, 0x18, 0xBE, 0x1B,
+        0xFC, 0x56, 0x3E, 0x4B, 0xC6, 0xD2, 0x79, 0x20, 0x9A, 0xDB, 0xC0, 0xFE, 0x78, 0xCD, 0x5A, 0xF4,
+        0x1F, 0xDD, 0xA8, 0x33, 0x88, 0x07, 0xC7, 0x31, 0xB1, 0x12, 0x10, 0x59, 0x27, 0x80, 0xEC, 0x5F,
+        0x60, 0x51, 0x7F, 0xA9, 0x19, 0xB5, 0x4A, 0x0D, 0x2D, 0xE5, 0x7A, 0x9F, 0x93, 0xC9, 0x9C, 0xEF,
+        0xA0, 0xE0, 0x3B, 0x4D, 0xAE, 0x2A, 0xF5, 0xB0, 0xC8, 0xEB, 0xBB, 0x3C, 0x83, 0x53, 0x99, 0x61,
+        0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D,
+    )
+
+    Rcon = (
+        0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40,
+        0x80, 0x1B, 0x36, 0x6C, 0xD8, 0xAB, 0x4D, 0x9A,
+        0x2F, 0x5E, 0xBC, 0x63, 0xC6, 0x97, 0x35, 0x6A,
+        0xD4, 0xB3, 0x7D, 0xFA, 0xEF, 0xC5, 0x91, 0x39,
+    )
+
+
+    def __init__(self, key, mode=128):
+        if mode == 192:
+            self.Nk = 6
+            self.Nr = 12
+            self.key = self.text2matrix(key, 24)
+        elif mode == 256:
+            self.Nk = 8
+            self.Nr = 14
+            self.key = self.text2matrix(key, 32)
+        else:
+            self.key = self.text2matrix(key)
+
+        self.key_expansion(self.key)
+
+    def text2matrix(self, text, len=16):
+        state = []
+
+        for i in range(len):
+            # two hex characters == 1 byte
+            byte = int(text[i*2:i*2+2], 16)
+            if i % 4 == 0:
+                # this means that the byte to append is the first of the column
+                state.append([byte])
+            else:
+                # Append byte to the row i // 4 
+                state[i // 4].append(byte) 
+
+        return state
+
+    def matrix2text(self, s, len=16):
+        text = ""
+        for i in range(len // 4):
+            for j in range(4):
+                text += format(s[i][j], '02x')
+
+        return text
+
+    def sub_bytes(self, s):
+        for i in range(self.Nb):
+            for j in range(4):
+                s[i][j] = self.Sbox[s[i][j]]
+    
+    def inv_sub_bytes(self, s):
+
+        for i in range(self.Nb):
+            for j in range(4):
+                s[i][j] = self.InvSbox[s[i][j]]
+
+    def shift_rows(self, s):
+        s[0][1], s[1][1], s[2][1], s[3][1] = s[1][1], s[2][1], s[3][1], s[0][1]
+        s[0][2], s[1][2], s[2][2], s[3][2] = s[2][2], s[3][2], s[0][2], s[1][2]
+        s[0][3], s[1][3], s[2][3], s[3][3] = s[3][3], s[0][3], s[1][3], s[2][3]
+
+    def inv_shift_rows(self, s):
+        s[0][1], s[1][1], s[2][1], s[3][1] = s[3][1], s[0][1], s[1][1], s[2][1]
+        s[0][2], s[1][2], s[2][2], s[3][2] = s[2][2], s[3][2], s[0][2], s[1][2]
+        s[0][3], s[1][3], s[2][3], s[3][3] = s[1][3], s[2][3], s[3][3], s[0][3]
+
+    def xtime(self, b):
+        if b & 0x80:
+            # check if b7 of the given polynomial is 1 or 0.
+            b = b << 1
+            b ^= 0x1B
+        else:
+            b = b << 1
+
+        return b & 0xFF # get the first 8 bits.
+
+    def mix_one_column(self, c):
+        t = c[0] ^ c[1] ^ c[2] ^ c[3]
+        u = c[0]
+        c[0] ^= self.xtime(c[0] ^ c[1]) ^ t
+        c[1] ^= self.xtime(c[1] ^ c[2]) ^ t
+        c[2] ^= self.xtime(c[2] ^ c[3]) ^ t
+        c[3] ^= self.xtime(c[3] ^ u) ^ t
+
+    def mix_columns(self, s):
+        for i in range(self.Nb):
+            self.mix_one_column(s[i])
+
+    def inv_mix_columns(self, s):
+        for i in range(self.Nb):
+            u = self.xtime(self.xtime(s[i][0] ^ s[i][2]))
+            v = self.xtime(self.xtime(s[i][1] ^ s[i][3]))
+            s[i][0] ^= u
+            s[i][1] ^= v
+            s[i][2] ^= u
+            s[i][3] ^= v
+
+        self.mix_columns(s)
+
+    def add_round_key(self, s, k):
+        for i in range(self.Nb):
+            for j in range(4):
+                s[i][j] ^= k[i][j]
+
+    def sub_word(self, w):
+        for i in range(len(w)):
+            w[i] = self.Sbox[w[i]]
+
+
+    def rotate_word(self, w):
+        w[0], w[1], w[2], w[3] = w[1], w[2], w[3], w[0]
+
+    def key_expansion(self, key):
+        self.round_keys = self.key
+
+        for i in range(self.Nk, self.Nb * (self.Nr + 1)):
+            self.round_keys.append([0, 0, 0, 0])
+            temp = self.round_keys[i - 1][:]
+            # word is multiple of Nk
+            if i % self.Nk == 0:
+                self.rotate_word(temp)
+                self.sub_word(temp)
+                temp[0] = temp[0] ^ self.Rcon[i // self.Nk]
+            elif self.Nk > 6 and i % self.Nk == 4:
+                self.sub_word(temp)
+
+            for j in range(4):
+                self.round_keys[i][j] = self.round_keys[i - self.Nk][j] ^ temp[j]
+
+    def cipher(self, text):
+        self.state = self.text2matrix(text)
+
+        self.add_round_key(self.state, self.round_keys[:4])
+
+        for i in range(1, self.Nr):
+            self.sub_bytes(self.state)
+            self.shift_rows(self.state)
+            self.mix_columns(self.state)
+            self.add_round_key(self.state, self.round_keys[self.Nb * i : self.Nb * (i + 1)])
+
+        self.sub_bytes(self.state)
+        self.shift_rows(self.state)
+        self.add_round_key(self.state, self.round_keys[len(self.round_keys) - 4:])
+
+        return self.matrix2text(self.state)
+
+    def decipher(self, text):
+        self.encrypted_state = self.text2matrix(text)
+
+        self.add_round_key(self.encrypted_state, self.round_keys[len(self.round_keys) - 4:])
+
+        for i in range(self.Nr - 1, 0, -1):
+            self.inv_shift_rows(self.encrypted_state)
+            self.inv_sub_bytes(self.encrypted_state)
+            self.add_round_key(self.encrypted_state, self.round_keys[self.Nb * i : self.Nb * (i + 1)])
+            self.inv_mix_columns(self.encrypted_state)
+
+        self.inv_shift_rows(self.encrypted_state)
+        self.inv_sub_bytes(self.encrypted_state)
+        self.add_round_key(self.encrypted_state, self.round_keys[:4])
+
+        return self.matrix2text(self.encrypted_state)
+
+def pad(block, block_length):
+    bytes_to_pad = block_length - len(block) // 2
+
+    for _ in range(bytes_to_pad):
+        block += format(bytes_to_pad, '02x')
+
+    return block
+
+def unpad(block):
+    bytes_to_unpad = int(block[-2:], 16)
+    return block[:-bytes_to_unpad*2]
+
+def xor_blocks(block_1, block_2):
+    return format(int(block_1, 16) ^ int(block_2, 16), '032x')
+
+def generate_random_iv(iv_length):
+    return bytes.hex(os.urandom(iv_length))
+
+def generate_random_ctr():
+    return generate_random_iv(8) + "0000000000000000"
+
+def increment_ctr(ctr):
+    ctr_inc_int = int.from_bytes(bytes.fromhex(ctr), byteorder="big") + 1
+    return bytes.hex(ctr_inc_int.to_bytes(length=16, byteorder="big"))
+
+class ECB:
+    def __init__(self, block_cipher_alg):
+        self.block_cipher_alg = block_cipher_alg
+
+    def cipher(self, filename, encrypted_file_name):
+        hex_array = FileTools.open_file(filename, 32)
+
+        # check if last block need to be padded
+        if len(hex_array[-1]) < 32:
+            hex_array[-1] = pad(hex_array[-1], 16)
+
+        cipher_array = []
+        for i in tqdm(range(len(hex_array)), desc="ECB encryption"):
+            cipher_array.append(self.block_cipher_alg.cipher(hex_array[i]))
+
+        FileTools.write_file(encrypted_file_name, cipher_array)
+
+    def decipher(self, filename, decrypted_file_name):
+        hex_array = FileTools.open_file(filename, 32)
+        decrypted_array = []
+        for i in tqdm(range(len(hex_array)), desc="ECB decryption"):
+            decrypted_array.append(self.block_cipher_alg.decipher(hex_array[i]))
+
+        # unpad last block
+        decrypted_array[-1] = unpad(decrypted_array[-1])
+
+        FileTools.write_file(decrypted_file_name, decrypted_array)
+        
+
+class CBC:
+
+    def __init__(self, block_cipher_alg, iv_length):
+        self.block_cipher_alg = block_cipher_alg
+        self.iv = generate_random_iv(iv_length)
+
+    def cipher(self, filename, encrypted_file_name):
+        hex_array = FileTools.open_file(filename, 32)
+
+        # check if last block need to be padded
+        if len(hex_array[-1]) < 32:
+            hex_array[-1] = pad(hex_array[-1], 16)
+
+        # Prefix the IV to the cipher text.
+        cipher_array = [self.iv]
+
+        iv = self.iv
+        for i in tqdm(range(len(hex_array)), desc="CBC encryption"):
+            block_to_cipher = xor_blocks(iv, hex_array[i])
+            cipher_array.append(self.block_cipher_alg.cipher(block_to_cipher))
+
+            # the ciphered block will be the "IV" for the next block
+            iv = cipher_array[i + 1]
+
+        FileTools.write_file(encrypted_file_name, cipher_array)
+
+    def decipher(self, filename, decrypted_file_name):
+        hex_array = FileTools.open_file(filename, 32)
+        iv = hex_array[0]
+        decrypted_array = []
+        for i in tqdm(range(1, len(hex_array)), desc="CBC decryption"):
+            decrypted_array.append(self.block_cipher_alg.decipher(hex_array[i]))
+            decrypted_array[i - 1] = xor_blocks(iv, decrypted_array[i - 1])
+
+            # the ciphered block will be the "IV" for the next block
+            iv = hex_array[i]
+
+        # unpad last block
+        decrypted_array[-1] = unpad(decrypted_array[-1])
+
+        FileTools.write_file(decrypted_file_name, decrypted_array)
+
+class CTR:
+    def __init__(self, block_cipher_alg):
+        self.block_cipher_alg = block_cipher_alg
+        self.ctr = generate_random_ctr()
+
+    def cipher(self, filename, encrypted_file_name):
+        hex_array = FileTools.open_file(filename, 32)
+
+        # Prefix the ctr to the cipher text.
+        cipher_array = [self.ctr]
+
+        ctr = self.ctr
+        for i in tqdm(range(len(hex_array)), desc="CTR encryption"):
+            ctr_encrypted = self.block_cipher_alg.cipher(ctr)
+            cipher_array.append(xor_blocks(ctr_encrypted, hex_array[i]))
+            ctr = increment_ctr(ctr)
+
+        FileTools.write_file(encrypted_file_name, cipher_array)
+
+        
+    def decipher(self, filename, decrypted_file_name):
+        hex_array = FileTools.open_file(filename, 32)
+        ctr = hex_array[0]
+        decrypted_array = []
+        for i in tqdm(range(1, len(hex_array)), desc="CTR decryption"):
+            ctr_encrypted = self.block_cipher_alg.cipher(ctr)
+            decrypted_array.append(xor_blocks(ctr_encrypted, hex_array[i]))
+            ctr = increment_ctr(ctr)
+
+        FileTools.write_file(decrypted_file_name, decrypted_array)
+
+class FileTools:
+    @staticmethod
+    def open_file(filename, chunk_size):
+        with open(filename, "rb") as f:
+            hex_array = []
+            for offset in range(0, os.path.getsize(filename), 16):
+                hex_array.append(bytes.hex(f.read(16)))
+                f.seek(offset + 16)
+
+            f.close()
+        
+        return hex_array
+
+    @staticmethod
+    def write_file(filename, block_array):
+        with open(filename, "ab") as f:
+            for i in range(len(block_array)):
+                f.write(bytes.fromhex(block_array[i]))
+
+            f.close()
+
+
+def read_key():
+    try:
+        f = open("key.txt", "r")
+    except IOError:
+        return 1
+    
+    key = f.read()
+    f.close()
+    return key
+
+def write_key(key):
+    with open("key.txt", "w") as f:
+        f.write(key)
+        f.close()
+
+
+def main(encrypt, input_file, output_file, block_cipher_mode, key_length):
+
+    if encrypt:
+
+        key = random_key_generator(int(key_length))
+
+        if key_length == "128":
+            AES = AES(key, 128)
+
+        elif key_length == "192":
+            AES = AES(key, 192)
+
+        elif key_length == "256":
+            AES = AES(key, 256)
+
+        if block_cipher_mode == "ECB":
+            bcm = ECB(AES)
+
+        elif block_cipher_mode == "CBC":
+            bcm = CBC(AES, 16)
+
+        elif block_cipher_mode == "CTR":
+            bcm = CTR(AES)
+
+        bcm.cipher(input_file, output_file)
+        print("Cipher Key:", key)
+        write_key(key)
+
+    else:
+        key = read_key()
+        if key == 1:
+            print("File key.txt doesn't exists! Can't decrypt without key")
+            exit(1)
+
+        key_length = len(key) * 4
+
+        if key_length == 128:
+            AES = AES(key, 128)
+
+        elif key_length == 192:
+            AES = AES(key, 192)
+
+        elif key_length == 256:
+            AES = AES(key, 256)
+
+        else:
+            print("Key length not valid!")
+            exit(1)
+
+        if block_cipher_mode == "ECB":
+            bcm = ECB(AES)
+
+        elif block_cipher_mode == "CBC":
+            bcm = CBC(AES, 16)
+
+        elif block_cipher_mode == "CTR":
+            bcm = CTR(AES)
+
+        bcm.decipher(input_file, output_file)
+
+
+if __name__ == "__main__":
+    main()
+    
+
+#Q3:- server part
+import socket
+from Crypto.PublicKey import RSA
+from Crypto import Random
+
+#Generate private and public keys
+random_generator = Random.new().read
+private_key = RSA.generate(1024, random_generator)
+public_key = private_key.publickey()
+
+
+#Declartion
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+ser_addr = ('127.0.0.1', 12345)
+
+print('\n***********\nStarting on {} port {}'.format(*ser_addr))
+s.bind(ser_addr)
+while True:
+
+    #Wait until data is received.
+    data,address = s.recvfrom(4096)
+    data=data.decode()
+    data = data.replace("\r\n", '') #remove new line character
+    print('***********\nReceived {} bytes from {}'.format(len(data), address))
+    #print(data)
+    #data=data.decode()
+    if data == "Client: OK":
+        s.sendto(public_key.exportKey(),address)
+        print("Public key sent to client.")
+    elif data == "Quit": break
+    elif data: #Reveive encrypted message and decrypt it.
+        #data = data.replace(encrypt_str, '')
+        print("Received:\nEncrypted message = "+str(data))
+        encrypted = eval(data)
+        decrypted = private_key.decrypt(data)
+        mess="Server: OK"
+        mess=mess.encode()
+        s.sendto(mess,ser_addr)
+        print("Decrypted message = " + decrypted)
+
+    
+
+#Server to stop
+s.send("Server stopped\n",ser_addr )
+print("Server stopped")
+s.close()
+
+
+
+
+
+#Q3:- Client part
+import socket
+from Crypto.PublicKey import RSA
+
+'''server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+host = "127.0.0.1"
+port = 8888
+
+
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+#server.bind(("127.0.1.1", 8888))
+server_address = ("192.168.43.16", 8888)
+server.connect(("192.168.43.16" , 8888))
+#data= "Client: OK"
+server.bind(server_address)
+'''
+#Tell server that connection is OK
+#server.sendall("Client : OK")
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+ser_addr = ('127.0.0.1', 12345)
+s.connect(ser_addr)
+
+message1="Client: OK"
+print('\n***********\nSending to Server {}'.format(message1))
+message1 = message1.encode()
+sent = s.sendto(message1, ser_addr)
+
+#Receive public key string from server
+server_string = s.recv(4096)
+server_string=server_string.decode()
+
+#Remove extra characters
+server_string = server_string.replace("\r\n", '')
+
+#Convert string to key
+server_public_key = RSA.importKey(server_string)
+
+#Encrypt message and send to server
+message = input("enter message to send or send Quit to stop ")
+encrypted = server_public_key.encrypt(message, 32)
+s.sendall("encrypted_message="+str(encrypted))
+
+#Server's response
+server_response = s.recv(4096)
+server_response=server_response.decode()
+server_response = server_response.replace("\r\n", '')
+if server_response == "Server: OK":
+    print("Server decrypted message successfully")
+
+#Tell server to finish connection
+s.sendall("Quit")
+print(s.recv(4096).decode()) #Quit server response
+s.close()
+
+
+
+
+
+
+
+
+
+
+
+
+Q4:- Server part
+from Crypto.Hash import MD5
+from Crypto.PublicKey import RSA
+from Crypto.Util import randpool
+ 
+import pickle
+import socket
+import sys
+ 
+#generate the RSA key
+blah = randpool.RandomPool()
+RSAKey = RSA.generate(512, blah.get_bytes)
+ 
+RSAPubKey = RSAKey.publickey()
+ 
+#listen for a connection
+host = ''
+port = 12345
+ 
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+s.bind((host,port))
+s.listen(1)
+ 
+print "Server is running on port %d; press Ctrl-C to terminate." % port
+ 
+while 1:
+  clientsock, clientaddr = s.accept()
+  print "got connection from ", clientsock.getpeername()
+  #send the public key over
+  clientsock.send(pickle.dumps(RSAPubKey))
+ 
+  rcstring = ''
+  while 1:
+    buf = clientsock.recv(1024)
+    rcstring += buf
+    if not len(buf):
+      break
+  clientsock.close()
+  #done with the network stuff, at least for this connection
+ 
+  #encmessage is the cipher text
+  encmessage = pickle.loads(rcstring)
+ 
+  print RSAKey.decrypt(encmessage)
+
+
+Q4:- Client 
+from Crypto.Hash import MD5
+from Crypto.PublicKey import RSA
+from Crypto.Util import randpool
+ 
+import pickle
+import socket
+ 
+host = 'localhost'
+port = 12345
+ 
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ 
+s.connect((host, port))
+ 
+#this should loop around until a delimeter is read
+#or something similar
+rcstring = s.recv(2048)
+ 
+#this object is of type RSAobj_c, which only has public key
+#encryption is possible, but not decryption
+publickey = pickle.loads(rcstring)
+ 
+print publickey
+ 
+#encrypt the top secret data
+secretText = publickey.encrypt("Hello, this is Rich.", 32)
+ 
+s.sendall(pickle.dumps(secretText))
+s.close()
